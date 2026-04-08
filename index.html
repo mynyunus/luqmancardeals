@@ -94,7 +94,7 @@
           <div class="hero-visual reveal">
             <figure class="hero-media">
               <img
-                src="assets/herosection/luqmanbg.jpg"
+                src="assets/herosection/WhatsApp%20Image%202026-04-04%20at%204.04.29%20PM.jpeg"
                 alt="Kenderaan Proton untuk rujukan pelanggan"
                 fetchpriority="high"
                 decoding="async"
@@ -697,6 +697,32 @@
       </div>
       <p class="copyright">© <span id="year"></span> faizcardeals. All rights reserved.</p>
     </footer>
+
+    <div class="floating-music" data-music-player>
+      <button class="music-toggle" type="button" aria-expanded="false" aria-controls="musicPanel" aria-label="Buka pemain muzik">
+        <img class="music-toggle-icon" src="assets/icon/playlist.png" alt="" aria-hidden="true" decoding="async" />
+        <span class="sr-only">Music</span>
+      </button>
+
+      <div class="music-panel" id="musicPanel" hidden>
+        <p class="music-title">Faiz's Song</p>
+        <div class="music-main-controls">
+          <button class="music-play" type="button" aria-label="Main atau henti lagu">Play</button>
+          <p class="music-time" aria-live="polite">00:00 / 00:00</p>
+        </div>
+        <input class="music-progress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Kawal posisi lagu" />
+        <label class="music-volume-wrap">
+          <span>Vol</span>
+          <input class="music-volume" type="range" min="0" max="1" value="0.8" step="0.01" aria-label="Kawal volume lagu" />
+        </label>
+      </div>
+
+      <audio
+        id="bgMusic"
+        preload="metadata"
+        src="assets/audio/WhatsApp%20Audio%202026-04-07%20at%205.08.34%20PM.mpeg"
+      ></audio>
+    </div>
 
     <a
       class="floating-wa"

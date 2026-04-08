@@ -9,6 +9,14 @@ const carousel = document.querySelector('[data-carousel]');
 const mobilePillNav = document.querySelector('[data-mobile-pill-nav]');
 const mobileMoreToggle = mobilePillNav ? mobilePillNav.querySelector('.pill-more-toggle') : null;
 const mobileDropdown = mobilePillNav ? mobilePillNav.querySelector('.pill-dropdown') : null;
+const musicPlayer = document.querySelector('[data-music-player]');
+const musicToggle = musicPlayer ? musicPlayer.querySelector('.music-toggle') : null;
+const musicPanel = musicPlayer ? musicPlayer.querySelector('.music-panel') : null;
+const musicAudio = musicPlayer ? musicPlayer.querySelector('#bgMusic') : null;
+const musicPlayBtn = musicPlayer ? musicPlayer.querySelector('.music-play') : null;
+const musicProgress = musicPlayer ? musicPlayer.querySelector('.music-progress') : null;
+const musicVolume = musicPlayer ? musicPlayer.querySelector('.music-volume') : null;
+const musicTime = musicPlayer ? musicPlayer.querySelector('.music-time') : null;
 
 const getOffset = () => {
   const isMobile = window.matchMedia('(max-width: 767px)').matches;
@@ -135,6 +143,139 @@ if ('IntersectionObserver' in window) {
 
 if (yearEl) {
   yearEl.textContent = String(new Date().getFullYear());
+}
+
+if (musicPlayer && musicToggle && musicPanel && musicAudio && musicPlayBtn && musicProgress && musicVolume && musicTime) {
+  let isScrubbing = false;
+  let panelCloseTimer = 0;
+
+  const formatTime = (seconds) => {
+    if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
+    const total = Math.floor(seconds);
+    const mins = Math.floor(total / 60);
+    const secs = String(total % 60).padStart(2, '0');
+    return `${String(mins).padStart(2, '0')}:${secs}`;
+  };
+
+  const updatePlayButton = () => {
+    const isPlaying = !musicAudio.paused;
+    musicPlayBtn.textContent = isPlaying ? 'Pause' : 'Play';
+    musicPlayBtn.classList.toggle('is-playing', isPlaying);
+    musicPlayBtn.setAttribute('aria-label', isPlaying ? 'Pause lagu' : 'Mainkan lagu');
+  };
+
+  const updateProgressUi = () => {
+    const duration = musicAudio.duration || 0;
+    const current = musicAudio.currentTime || 0;
+    if (!isScrubbing) {
+      musicProgress.value = duration > 0 ? String((current / duration) * 100) : '0';
+    }
+    musicTime.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+  };
+
+  const openMusicPanel = () => {
+    window.clearTimeout(panelCloseTimer);
+    musicToggle.setAttribute('aria-expanded', 'true');
+    musicPanel.hidden = false;
+    window.requestAnimationFrame(() => {
+      musicPanel.classList.add('is-open');
+    });
+  };
+
+  const closeMusicPanel = (immediate = false) => {
+    musicToggle.setAttribute('aria-expanded', 'false');
+    musicPanel.classList.remove('is-open');
+    window.clearTimeout(panelCloseTimer);
+    if (immediate) {
+      musicPanel.hidden = true;
+      return;
+    }
+    panelCloseTimer = window.setTimeout(() => {
+      if (musicToggle.getAttribute('aria-expanded') !== 'true') {
+        musicPanel.hidden = true;
+      }
+    }, 190);
+  };
+
+  musicToggle.addEventListener('click', () => {
+    const isOpen = musicToggle.getAttribute('aria-expanded') === 'true';
+    if (isOpen) closeMusicPanel();
+    else openMusicPanel();
+  });
+
+  musicPlayBtn.addEventListener('click', async () => {
+    try {
+      if (musicAudio.paused) await musicAudio.play();
+      else musicAudio.pause();
+    } catch {
+      // Ignore blocked playback attempts and keep UI responsive.
+    }
+    updatePlayButton();
+  });
+
+  const applyProgressValue = () => {
+    const duration = musicAudio.duration || 0;
+    if (duration <= 0) return;
+    const ratio = Number.parseFloat(musicProgress.value) / 100;
+    musicAudio.currentTime = Math.min(duration, Math.max(0, ratio * duration));
+    updateProgressUi();
+  };
+
+  musicProgress.addEventListener('pointerdown', () => {
+    isScrubbing = true;
+  });
+
+  musicProgress.addEventListener('pointerup', () => {
+    isScrubbing = false;
+    applyProgressValue();
+  });
+
+  musicProgress.addEventListener(
+    'touchstart',
+    () => {
+      isScrubbing = true;
+    },
+    { passive: true }
+  );
+
+  musicProgress.addEventListener(
+    'touchend',
+    () => {
+      isScrubbing = false;
+      applyProgressValue();
+    },
+    { passive: true }
+  );
+
+  musicProgress.addEventListener('input', applyProgressValue);
+  musicProgress.addEventListener('change', () => {
+    isScrubbing = false;
+    applyProgressValue();
+  });
+
+  musicVolume.addEventListener('input', () => {
+    const value = Number.parseFloat(musicVolume.value);
+    musicAudio.volume = Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0.8;
+  });
+
+  musicAudio.addEventListener('loadedmetadata', updateProgressUi);
+  musicAudio.addEventListener('durationchange', updateProgressUi);
+  musicAudio.addEventListener('timeupdate', updateProgressUi);
+  musicAudio.addEventListener('play', updatePlayButton);
+  musicAudio.addEventListener('pause', updatePlayButton);
+  musicAudio.addEventListener('ended', updatePlayButton);
+
+  document.addEventListener('click', (event) => {
+    if (!musicPlayer.contains(event.target)) closeMusicPanel();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMusicPanel();
+  });
+
+  musicAudio.volume = Number.parseFloat(musicVolume.value) || 0.8;
+  updatePlayButton();
+  updateProgressUi();
 }
 
 if (loanForm && monthlyPaymentEl && loanSummaryEl && loanWhatsappCta) {

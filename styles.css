@@ -479,7 +479,7 @@ p {
   height: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  object-position: center;
+  object-position: center 37%;
 }
 
 .hero-card {
@@ -1069,6 +1069,144 @@ p {
   color: var(--color-footer-muted);
 }
 
+.floating-music {
+  position: fixed;
+  left: calc(1rem + env(safe-area-inset-left));
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  z-index: 1200;
+}
+
+.music-toggle {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #c7d8f3;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #1a3f79;
+  box-shadow: 0 14px 28px rgba(8, 36, 84, 0.2);
+  cursor: pointer;
+  transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease, background-color var(--motion-fast) ease;
+}
+
+.music-toggle-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.music-toggle:hover {
+  background: #dfeaff;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 16px 30px rgba(8, 36, 84, 0.26);
+}
+
+.music-panel {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 0.65rem);
+  width: min(86vw, 300px);
+  padding: 0.85rem 0.85rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-md);
+  background-image: url("assets/herosection/WhatsApp%20Image%202026-04-04%20at%204.04.29%20PM.jpeg");
+  background-size: cover;
+  background-position: center 20%;
+  box-shadow: 0 18px 30px rgba(15, 23, 38, 0.16);
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transform-origin: bottom left;
+  pointer-events: none;
+  transition: opacity var(--motion-fast) ease, transform var(--motion-fast) ease;
+  overflow: hidden;
+}
+
+.music-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 20, 38, 0.62);
+  z-index: 0;
+}
+
+.music-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.music-panel[hidden] {
+  display: none;
+}
+
+.music-panel.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.music-title {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  color: #f7fbff;
+}
+
+.music-main-controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.6rem;
+}
+
+.music-play {
+  min-height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #17396f;
+  font-family: var(--font-accent);
+  font-size: 0.76rem;
+  padding: 0.34rem 0.68rem;
+  cursor: pointer;
+}
+
+.music-play.is-playing {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.music-time {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #ebf3ff;
+  text-align: right;
+}
+
+.music-progress {
+  width: 100%;
+  margin: 0 0 0.62rem;
+  accent-color: #d2e2ff;
+}
+
+.music-volume-wrap {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-accent);
+  font-size: 0.74rem;
+  color: #ebf3ff;
+}
+
+.music-volume {
+  width: 100%;
+  accent-color: #d2e2ff;
+}
+
 .floating-wa {
   position: fixed;
   right: calc(1rem + env(safe-area-inset-right));
@@ -1203,6 +1341,7 @@ p {
 
   .hero-media img {
     aspect-ratio: 5 / 6;
+    object-position: center;
   }
 
   .hero-card {
