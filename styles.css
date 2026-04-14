@@ -498,6 +498,24 @@ p {
   font-size: clamp(1.15rem, 2.8vw, 1.45rem);
 }
 
+.hero-follow-videos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.hero-follow-video-item {
+  display: grid;
+  place-items: center;
+}
+
+.hero-follow-video {
+  width: min(100%, 270px);
+  max-height: 470px;
+  border-radius: 12px;
+  display: block;
+}
+
 .section-head {
   margin-bottom: var(--space-5);
 }
@@ -1372,6 +1390,11 @@ p {
     padding: var(--space-5);
   }
 
+  .hero-follow-video {
+    width: min(100%, 300px);
+    max-height: 520px;
+  }
+
   .grid-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1422,6 +1445,11 @@ p {
 
   .hero-card {
     width: 84%;
+  }
+
+  .hero-follow-video {
+    width: min(100%, 340px);
+    max-height: 580px;
   }
 
   .grid-3 {
